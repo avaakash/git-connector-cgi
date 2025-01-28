@@ -1,51 +1,50 @@
 package common
 
-type Input struct {
-	Provider        string           `json:"provider"`
-	ConnectorParams *ConnectorParams `json:"connector_params"`
+type ResponseStatus string
+type SSHAuthMechanism string
+type HTTPAuthMethod string
+type SSHAuthMethod string
+
+type RequestData struct {
+	ConnectorType      string              `json:"connector_type"`
+	ConnectorOperation string              `json:"connector_operation"`
+	ConnectorParams    *GitConnectorParams `json:"connector_params"`
 }
 
-type ConnectorParams struct {
-	Action     string     `json:"connector_operation"`
-	AuthMethod string     `json:"auth_method"`
-	Config     *GitConfig `json:"git_config"`
+type GitConnectorParams struct {
+	AuthType string    `json:"auth_type"`
+	Repo     string    `json:"repo"`
+	HTTPAuth *HTTPAuth `json:"http_auth"`
+	SSHAuth  *SSHAuth  `json:"ssh_auth"`
 }
 
-type GitConfig struct {
-	Token    string `json:"token"`
-	Owner    string `json:"owner"`
-	Username string `json:"username"`
-	Repo     string `json:"repo"`
-	SSHKey   []byte `json:"ssh_key"`
+type HTTPAuth struct {
+	AuthMethod HTTPAuthMethod `json:"auth_method"`
+	Username   string         `json:"username"`
+	Token      string         `json:"token"`
+	Password   string         `json:"password"`
+}
+
+type SSHAuth struct {
+	AuthMechanism      SSHAuthMechanism `json:"auth_mechanism"`
+	SshKeyAuthMethod   SSHAuthMethod    `json:"ssh_key_auth_method"`
+	KerberosAuthMethod SSHAuthMethod    `json:"kerberos_auth_method"`
+	SshKey             []byte           `json:"ssh_key"`
+	SshKeyPath         string           `json:"ssh_key_path"`
+	Password           string           `json:"password"`
+	Passphrase         string           `json:"passphrase"`
 }
 
 type ValidationResponse struct {
-	IsValid bool   `json:"valid"`
-	Error   *Error `json:"error"`
+	Status       ResponseStatus `json:"status"`
+	Errors       []ErrorDetail  `json:"errors"`
+	ErrorSummary string         `json:"error_summary"`
 }
 
-type OperationStatus string
-
-var (
-	OperationStatusSuccess OperationStatus = "SUCCESS"
-	OperationStatusFailure OperationStatus = "FAILURE"
-)
-
-type OperationResponse struct {
-	Name            string          `json:"name"`
-	Message         string          `json:"message"`
-	Error           *Error          `json:"error"`
-	OperationStatus OperationStatus `json:"status"`
-}
-
-type Error struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
+type ErrorDetail struct {
 	Reason  string `json:"reason"`
+	Message string `json:"message"`
+	Code    int    `json:"code"`
 }
 
-type ErrorResponse struct {
-	Message string `json:"message"`
-	Error   string `json:"error"`
-	Status  int    `json:"status"`
-}
+type GitAuthType string

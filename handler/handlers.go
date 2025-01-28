@@ -7,33 +7,34 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/harness/github-connector-cgi/common"
-	gitconnector "github.com/harness/github-connector-cgi/git"
+	"github.com/harness/git-connector-cgi/common"
+	gitconnector "github.com/harness/git-connector-cgi/git"
+	"github.com/sirupsen/logrus"
 )
 
 func HandleRequest(w http.ResponseWriter, r *http.Request) {
-	in := new(common.Input)
-
-	if err := json.NewDecoder(r.Body).Decode(in); err != nil {
+	requestData := new(common.RequestData)
+	if err := json.NewDecoder(r.Body).Decode(requestData); err != nil {
 		SendErrorResponse(w, err, "Failed to decode request body", http.StatusBadRequest)
 		return
 	}
+	logrus.Infof("Connector Params: %+v, HTTP Params: %+v, SSH Params: %+v", requestData.ConnectorParams, requestData.ConnectorParams.HTTPAuth, requestData.ConnectorParams.SSHAuth)
 
-	if in.ConnectorParams.Config == nil {
-		SendErrorResponse(w, errors.New("empty config"), "Configuration is missing", http.StatusBadRequest)
+	if requestData.ConnectorParams.Repo == "" {
+		SendErrorResponse(w, errors.New("empty validation repository url"), "Validation repository URL is missing", http.StatusBadRequest)
 		return
 	}
 
-	connector := gitconnector.New(in.ConnectorParams.Config)
+	connector := gitconnector.New(requestData.ConnectorParams)
 
-	authMethod := strings.ToLower(in.ConnectorParams.AuthMethod)
-	operation := strings.ToLower(in.ConnectorParams.Action)
+	authType := strings.ToLower(requestData.ConnectorParams.AuthType)
+	operation := strings.ToLower(requestData.ConnectorOperation)
 
 	var result interface{}
 
 	switch operation {
 	case "validate":
-		result = connector.ValidateAcces(authMethod)
+		result = connector.ValidateAcces(authType)
 	default:
 		SendErrorResponse(w, errors.New("invalid action"), fmt.Sprintf("The specified action %s is not supported", operation), http.StatusBadRequest)
 		return

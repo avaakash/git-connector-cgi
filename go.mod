@@ -1,4 +1,4 @@
-module github.com/harness/github-connector-cgi
+module github.com/harness/git-connector-cgi
 
 go 1.23.4
 

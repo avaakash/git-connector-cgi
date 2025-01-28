@@ -4,14 +4,20 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/harness/github-connector-cgi/common"
+	"github.com/harness/git-connector-cgi/common"
 )
 
-func NewErrorResponse(err error, message string, status int) common.ErrorResponse {
-	return common.ErrorResponse{
-		Message: message,
-		Error:   err.Error(),
-		Status:  status,
+func NewErrorResponse(err error, message string, code int) common.ValidationResponse {
+	return common.ValidationResponse{
+		Status: common.Failure,
+		Errors: []common.ErrorDetail{
+			{
+				Reason:  err.Error(),
+				Message: message,
+				Code:    code,
+			},
+		},
+		ErrorSummary: message,
 	}
 }
 

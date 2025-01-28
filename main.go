@@ -2,8 +2,9 @@ package main
 
 import (
 	"net/http"
+	"net/http/cgi"
 
-	"github.com/harness/github-connector-cgi/handler"
+	"github.com/harness/git-connector-cgi/handler"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,8 +14,7 @@ func main() {
 	})
 
 	http.HandleFunc("/", handler.HandleRequest)
-	err := http.ListenAndServe(":8080", nil)
-	// err := cgi.Serve(http.DefaultServeMux)
+	err := cgi.Serve(http.DefaultServeMux)
 
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to serve CGI")
