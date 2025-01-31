@@ -9,6 +9,14 @@ const (
 )
 
 const (
+	Github Provider = "Github"
+)
+
+const (
+	AuthTypeHttp GitAuthType = "Http"
+	AuthTypeSsh  GitAuthType = "Ssh"
+)
+const (
 	SSHKey   SSHAuthMechanism = "SSH_KEY"
 	Kerberos SSHAuthMechanism = "KERBEROS"
 )
@@ -24,4 +32,9 @@ const (
 	SSHAuthPassword SSHAuthMethod = "Password"
 	SSHAuthKey      SSHAuthMethod = "KeyReference"
 	SSHAuthKeyPath  SSHAuthMethod = "KeyPath"
+)
+
+const (
+	APIAccessToken     APIAccessType = "Token"
+	APIAccessGithubApp APIAccessType = "GithubApp"
 )

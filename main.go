@@ -14,6 +14,7 @@ func main() {
 	})
 
 	http.HandleFunc("/", handler.HandleRequest)
+	// err := http.ListenAndServe(":9600", nil) // nil uses the default ServeMux
 	err := cgi.Serve(http.DefaultServeMux)
 
 	if err != nil {
