@@ -14,6 +14,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/go-github/v64/github"
 	"github.com/harness/git-connector-cgi/common"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -83,6 +84,7 @@ func getInstallationAccessToken(jwtToken string, installationID string, githubUr
 			return "", fmt.Errorf("failed to create GitHub Entreprise client for URL: %v due to %w", githubUrl, err)
 		}
 	}
+	logrus.Info("Github URL: ", githubUrl)
 	// Use GitHub's API to exchange JWT for the installation access token
 	installationIDInt, err := strconv.ParseInt(installationID, 10, 64)
 	if err != nil {
